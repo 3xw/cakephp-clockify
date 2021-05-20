@@ -1,5 +1,5 @@
 {
-  "name": "3xw/cakephp-clickup",
+  "name": "3xw/cakephp-clockify",
   "description": "CakePHP pages plugins",
   "type": "cakephp-plugin",
   "require": {
@@ -12,12 +12,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Trois\\Clickup\\": "src"
+      "Trois\\Clockify\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Trois\\Clickup\\Test\\": "tests",
+      "Trois\\Clockify\\Test\\": "tests",
       "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
     }
   }
