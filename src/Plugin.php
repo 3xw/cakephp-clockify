@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Trois\Clickup;
+namespace Trois\Clockify;
 
 use Cake\Core\BasePlugin;
 use Cake\Routing\RouteBuilder;

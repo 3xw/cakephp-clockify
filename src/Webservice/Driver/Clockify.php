@@ -1,12 +1,12 @@
 <?php
 
-namespace Trois\Clickup\Webservice\Driver;
+namespace Trois\Clockify\Webservice\Driver;
 
 use Cake\Network\Http\Client;
 use Muffin\Webservice\AbstractDriver;
 
 
-class ClickUp extends AbstractDriver
+class Clockify extends AbstractDriver
 {
 
   /**
@@ -15,8 +15,9 @@ class ClickUp extends AbstractDriver
   public function initialize()
   {
     $this->client(new Client([
-      'host' => 'api.clickup.com',
+      'host' => 'api.clockify.me',
       'scheme' => 'https',
+      'headers' => ['X-Api-Key' => $this->getConfig('api_key')]
     ]));
   }
 }

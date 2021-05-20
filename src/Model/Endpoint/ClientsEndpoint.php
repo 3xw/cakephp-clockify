@@ -1,9 +1,7 @@
 <?php
-namespace Trois\Clickup\Model\Endpoint;
+namespace Trois\Clockify\Model\Endpoint;
 
-use Muffin\Webservice\Model\Endpoint;
-
-class SpaceEndpoint extends Endpoint
+class ClientsEndpoint extends ClockifyEndpoint
 {
   public function initialize(array $config)
   {
@@ -11,6 +9,6 @@ class SpaceEndpoint extends Endpoint
     $this->primaryKey('id');
     $this->displayField('name');
     //$this->setWebservice('Space', new \App\Webservice\ClickUp\SpaceWebservice);
-    debug($this->getWebservice());
+    //debug($this->getWebservice());
   }
 }

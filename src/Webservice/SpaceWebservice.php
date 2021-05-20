@@ -1,8 +1,8 @@
 <?php
 
-namespace Trois\Clickup\Webservice;
+namespace Trois\Clockify\Webservice;
 
-class SpaceWebservice extends ClickUpWebservice
+class SpaceWebservice extends ClockifyWebservice
 {
 
 }
