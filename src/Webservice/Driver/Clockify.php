@@ -15,9 +15,12 @@ class Clockify extends AbstractDriver
   public function initialize()
   {
     $this->client(new Client([
-      'host' => 'api.clockify.me',
+      'host' =>  $this->getConfig('host'),
       'scheme' => 'https',
-      'headers' => ['X-Api-Key' => $this->getConfig('api_key')]
+      'headers' => [
+        'X-Api-Key' => $this->getConfig('token'),
+        'Content-Type' => 'application/json'
+      ]
     ]));
   }
 }

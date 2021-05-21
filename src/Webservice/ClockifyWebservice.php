@@ -17,6 +17,8 @@ use Muffin\Webservice\Webservice\Webservice;
 class ClockifyWebservice extends Webservice
 {
 
+  protected $_queryFilters = [];
+
   /**
   * Returns the base URL for this endpoint
   *
@@ -41,51 +43,33 @@ class ClockifyWebservice extends Webservice
     }
     // Result limit has been set, add to query parameters
     if ($query->limit()) {
-      $queryParameters['per_page'] = $query->limit();
+      $queryParameters['page-size'] = $query->limit();
+    }
+
+    if ($query->clause('order')){
+      foreach ($query->clause('order') as $field => $value)
+      $queryParameters[strtoupper($field)] = strtoupper($value) == 'ASC'? 'ASCENDING': 'DESCENDING';
     }
 
     $search = false;
     $searchParameters = [];
     if ($query->clause('where')) {
       foreach ($query->clause('where') as $field => $value) {
-        switch ($field) {
-          case 'id':
-          default:
-          // Add the condition as search parameter
-          $searchParameters[$field] = $value;
-
-          // Mark this query as a search
-          $search = true;
-        }
+        if(in_array($field, $this->_queryFilters)) $queryParameters[$field] = is_array($value)? implode(",", $value): $value;
       }
     }
 
     // Check if this query could be requested using a nested resource.
-    if ($nestedResource = $this->nestedResource($query->clause('where'))) {
-      $url = $nestedResource;
-
-      // If this is the case turn search of
-      $search = false;
-    }
-
-    if ($search) {
-      $url = '/search' . $url;
-
-      $q = [];
-      foreach ($searchParameters as $parameter => $value) {
-        $q[] = $parameter . ':' . $value;
-      }
-
-      $queryParameters['q'] = implode(' ', $q);
-    }
+    if ($nestedResource = $this->nestedResource($query->clause('where'))) $url = $nestedResource;
 
     /* @var Response $response */
-    $response = $this->driver()->client()->get($url, $queryParameters);
+    if(empty($query->set())) $response = $this->driver()->client()->get($url, $queryParameters);
+    else $response = $this->driver()->client()->post($url, json_encode($query->set()));
     $results = $response->getJson();
     if (!$response->isOk())
     {
       debug($response->getJson());
-      throw new \Exception($response->getJson()['err']);
+      throw new \Exception($response->getJson()['message']);
     }
 
     // Turn results into resources
@@ -105,25 +89,5 @@ class ClockifyWebservice extends Webservice
     }
 
     return $resources;
-  }
-
-  protected function _executeCreateQuery(Query $query, array $options = [])
-  {
-    debug($options);
-    die();
-    $url = $this->getBaseUrl();
-    if ($nestedResource = $this->nestedResource($options)) $url = $nestedResource;
-
-    debug($url);
-
-    $response = $this->driver()->client()->post($url, $query->set());
-
-    if (!$response->isOk())
-    {
-      debug($response);
-      throw new \Exception($response->getJson()['err']);
-    }
-
-    return $this->_transformResource($query->endpoint(), $response->getJson());
   }
 }
