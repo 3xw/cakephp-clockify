@@ -5,7 +5,7 @@ namespace Trois\Clockify\Webservice;
 class ProjectsWebservice extends ClockifyWebservice
 {
   protected $_queryFilters = ['clients'];
-  
+
   public function initialize()
   {
     parent::initialize();
@@ -14,9 +14,9 @@ class ProjectsWebservice extends ClockifyWebservice
       'workspaceId',
     ]);
 
-    $this->addNestedResource('/api/v1/workspaces/:workspaceId/clients/:projectsId', [
+    $this->addNestedResource('/api/v1/workspaces/:workspaceId/projects/:projectId', [
       'workspaceId',
-      'projectsId',
+      'projectId',
     ]);
   }
 }

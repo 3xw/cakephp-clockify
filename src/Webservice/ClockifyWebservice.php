@@ -2,6 +2,7 @@
 
 namespace Trois\Clockify\Webservice;
 
+use Cake\Utility\Text;
 use Cake\Network\Http\Response;
 use Cake\Utility\Hash;
 use Muffin\Webservice\Model\Endpoint;
@@ -27,6 +28,25 @@ class ClockifyWebservice extends Webservice
   public function getBaseUrl()
   {
     return '/api/v1/' . $this->endpoint();
+  }
+
+  public function nestedResource(array $conditions)
+  {
+    if(empty($conditions)) return false;
+    if(empty($this->_nestedResources)) return false;
+
+    // keys to replace
+    $keys = array_keys($conditions);
+
+    foreach ($this->_nestedResources as $url => $options)
+    {
+      $diff = array_diff($options['requiredFields'], $keys);
+      if(count($diff) != 0 || count($options['requiredFields']) != count($keys)) continue;
+
+      return Text::insert($url, $conditions);
+    }
+
+    return false;
   }
 
   /**
@@ -68,6 +88,7 @@ class ClockifyWebservice extends Webservice
     $results = $response->getJson();
     if (!$response->isOk())
     {
+      debug($url);
       debug($response->getJson());
       throw new \Exception($response->getJson()['message']);
     }
@@ -90,4 +111,49 @@ class ClockifyWebservice extends Webservice
 
     return $resources;
   }
-}
+
+  protected function _executeCreateQuery(Query $query, array $options = [])
+  {
+    return $this->_write($query, $options);
+  }
+
+  protected function _executeUpdateQuery(Query $query, array $options = [])
+  {
+    return $this->_write($query, $options);
+  }
+
+  protected function _write(Query $query, array $options = [])
+  {
+    $url = $this->getBaseUrl();
+    if (
+      $query->getOptions() &&
+      !empty($query->getOptions()['nested']) &&
+      $nestedResource = $this->nestedResource($query->getOptions()['nested'])
+      ) $url = $nestedResource;
+      
+      switch ($query->action())
+      {
+        case Query::ACTION_CREATE:
+        $response = $this->driver()->client()->post($url, json_encode($query->set()));
+        break;
+
+        case Query::ACTION_UPDATE:
+        $response = $this->driver()->client()->put($url, json_encode($query->set()));
+        break;
+
+        case Query::ACTION_DELETE:
+        $response = $this->driver()->client()->delete($url);
+        break;
+      }
+
+      if (!$response->isOk())
+      {
+        debug($url);
+        debug($response);
+        debug($response->getStringBody());
+        throw new \Exception($response->getJson()['err']);
+      }
+
+      return $this->_transformResource($query->endpoint(), $response->getJson());
+    }
+  }
