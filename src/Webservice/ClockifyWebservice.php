@@ -38,6 +38,9 @@ class ClockifyWebservice extends Webservice
     // keys to replace
     $keys = array_keys($conditions);
 
+    // remove query filters
+    foreach($keys as $k => $key) if(in_array($key, $this->_queryFilters)) unset($keys[$k]);
+
     foreach ($this->_nestedResources as $url => $options)
     {
       $diff = array_diff($options['requiredFields'], $keys);
@@ -130,7 +133,7 @@ class ClockifyWebservice extends Webservice
       !empty($query->getOptions()['nested']) &&
       $nestedResource = $this->nestedResource($query->getOptions()['nested'])
       ) $url = $nestedResource;
-      
+
       switch ($query->action())
       {
         case Query::ACTION_CREATE:
