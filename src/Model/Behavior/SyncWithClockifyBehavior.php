@@ -48,6 +48,7 @@ class SyncWithClockifyBehavior extends Behavior
     else $this->setConfig('clientId', false);
 
     // create empty
+    $clockifyId = false;
     $resource =  $this->getEndpoint()->newEntity();
 
     // check if one exists
