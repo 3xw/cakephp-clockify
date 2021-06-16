@@ -48,6 +48,9 @@ class ReportsWebservice extends ClockifyWebservice
 
       $resources[$pName][$uName][$start] = $result;
     }
-    return [$resources];
+
+    $res = [];
+    foreach ($resources as $key => $result) $res[] = [$key => $result];
+    return $res;
   }
 }
