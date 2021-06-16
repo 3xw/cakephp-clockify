@@ -52,17 +52,17 @@ class ReportsWebservice extends ClockifyWebservice
       // create user entries
       if(!Hash::check($resources, "$pName.users.$uName"))
       {
-        $resources[$pName]['users'][$uName] = [
+        $resources[$pName]['users'][$uName] = (object)[
           'user' => $r->userName,
           'userEmail' => $r->userEmail,
           'entries' => []
         ];
       }
 
-      $resources[$pName]['users'][$uName]['entries'][$start] = $result;
+      $resources[$pName]['users'][$uName]->entries[$start] = $r;
 
       // sort
-      ksort($resources[$pName]['users'][$uName]['entries']);
+      ksort($resources[$pName]['users'][$uName]->entries);
     }
 
     $res = [];
