@@ -38,19 +38,35 @@ class ReportsWebservice extends ClockifyWebservice
       $pName = Text::slug($r->projectName);
       $uName = text::slug($r->userEmail);
       $start = text::slug($r->timeInterval['start']);
-      $path = "$pName.$uName";
 
-      // create entry
-      if(!Hash::check($resources, $path))
+      // create project
+      if(!Hash::check($resources, $pName))
       {
-        $resources = array_merge($resources, Hash::expand([$path => []]));
+        $resources[$pName] = [
+          'client' => $r->clientName,
+          'name' => $r->projectName,
+          'users' => []
+        ];
       }
 
-      $resources[$pName][$uName][$start] = $result;
+      // create user entries
+      if(!Hash::check($resources, "$pName.users.$uName"))
+      {
+        $resources[$pName]['users'][$uName] = [
+          'user' => $r->userName,
+          'userEmail' => $r->userEmail,
+          'entries' => []
+        ];
+      }
+
+      $resources[$pName]['users'][$uName]['entries'][$start] = $result;
+
+      // sort
+      ksort($resources[$pName]['users'][$uName]['entries']);
     }
 
     $res = [];
-    foreach ($resources as $key => $result) $res[] = [$key => $result];
+    foreach ($resources as $key => $result) $res[] = $result;
     return $res;
   }
 }
