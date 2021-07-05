@@ -96,6 +96,13 @@ class ClockifyWebservice extends Webservice
       throw new \Exception($response->getJson()['message']);
     }
 
+    // check limit
+    if(
+      !empty($query->set()) &&
+      Hash::check($query->set(),'detailedFilter.pageSize') &&
+      Hash::check($results,'totals.0.entriesCount')
+    ) if(Hash::get($results,'totals.0.entriesCount') >= Hash::get($query->set(),'detailedFilter.pageSize')) throw new \Exception("Limite export gartuit atteinte (".Hash::get($results,'totals.0.entriesCount').")");
+
     // Turn results into resources
     $resources = $this->_transformResults($query->endpoint(), $results);
 
