@@ -59,7 +59,7 @@ class ReportsWebservice extends ClockifyWebservice
         ];
       }
 
-      $resources[$pName]['users'][$uName]->entries[$start] = $r;
+      $this->addTimeRecord($resources[$pName]['users'][$uName]->entries, $r);
 
       // sort
       ksort($resources[$pName]['users'][$uName]->entries);
@@ -68,5 +68,12 @@ class ReportsWebservice extends ClockifyWebservice
     $res = [];
     foreach ($resources as $key => $result) $res[] = $result;
     return $res;
+  }
+
+  protected function addTimeRecord(&$array, $record)
+  {
+    $key = (new \DateTime($record->timeInterval['start']))->format('Y-m-d');
+    if(empty($array[$key])) $array[$key] = $record;
+    else $array[$key]->timeInterval['duration'] += $record->timeInterval['duration'];
   }
 }
