@@ -53,7 +53,7 @@ class SyncWithClockifyBehavior extends Behavior
 
     // check if one exists
     if(
-      !$entity->isNew() &&
+      // !$entity->isNew() &&
       $clockifyId = $this->getClockifyId($entity, $options['EnableClockifySync']['nested'])
     ){
       if($this->getConfig('endpoint') != 'Clients')
