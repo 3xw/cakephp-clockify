@@ -12,7 +12,7 @@ class Clockify extends AbstractDriver
   /**
   * {@inheritDoc}
   */
-  public function initialize()
+  public function initialize(): void
   {
     $this->setClient(new Client([
       'host' =>  $this->getConfig('host'),
