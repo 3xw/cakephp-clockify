@@ -2,8 +2,8 @@
 
 namespace Trois\Clockify\Webservice\Driver;
 
-use Cake\Network\Http\Client;
-use Muffin\Webservice\AbstractDriver;
+use Cake\Http\Client;
+use Muffin\Webservice\Webservice\Driver\AbstractDriver;
 
 
 class Clockify extends AbstractDriver
@@ -14,7 +14,7 @@ class Clockify extends AbstractDriver
   */
   public function initialize()
   {
-    $this->client(new Client([
+    $this->setClient(new Client([
       'host' =>  $this->getConfig('host'),
       'scheme' => 'https',
       'headers' => [
