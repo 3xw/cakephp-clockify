@@ -4,7 +4,7 @@ namespace Trois\Clockify\Webservice;
 
 class ClientsWebservice extends ClockifyWebservice
 {
-  public function initialize()
+  public function initialize(): void
   {
     parent::initialize();
 

@@ -6,8 +6,8 @@ use Cake\Utility\Text;
 use Cake\Network\Http\Response;
 use Cake\Utility\Hash;
 use Muffin\Webservice\Model\Endpoint;
-use Muffin\Webservice\Query;
-use Muffin\Webservice\ResultSet;
+use Muffin\Webservice\Datasource\Query;
+use Muffin\Webservice\Datasource\ResultSet;
 use Muffin\Webservice\Webservice\Webservice;
 
 /**
@@ -27,7 +27,7 @@ class ClockifyWebservice extends Webservice
   */
   public function getBaseUrl()
   {
-    return '/api/v1/' . $this->endpoint();
+    return '/api/v1/' . $this->getEndpoint();
   }
 
   public function nestedResource(array $conditions)
@@ -61,12 +61,12 @@ class ClockifyWebservice extends Webservice
 
     $queryParameters = [];
     // Page number has been set, add to query parameters
-    if ($query->page()) {
-      $queryParameters['page'] = $query->page();
+    if ($query->clause('page')) {
+      $queryParameters['page'] = $query->clause('page');
     }
     // Result limit has been set, add to query parameters
-    if ($query->limit()) {
-      $queryParameters['page-size'] = $query->limit();
+    if ($query->clause('limit')) {
+      $queryParameters['page-size'] = $query->clause('limit');
     }
 
     if ($query->clause('order')){
@@ -86,8 +86,8 @@ class ClockifyWebservice extends Webservice
     if ($nestedResource = $this->nestedResource($query->clause('where'))) $url = $nestedResource;
 
     /* @var Response $response */
-    if(empty($query->set())) $response = $this->driver()->client()->get($url, $queryParameters);
-    else $response = $this->driver()->client()->post($url, json_encode($query->set()));
+    if(empty($query->set())) $response = $this->getDriver()->getClient()->get($url, $queryParameters);
+    else $response = $this->getDriver()->getClient()->post($url, json_encode($query->set()));
     $results = $response->getJson();
     if (!$response->isOk())
     {
@@ -104,12 +104,12 @@ class ClockifyWebservice extends Webservice
     ) if(Hash::get($results,'totals.0.entriesCount') >= Hash::get($query->set(),'detailedFilter.pageSize')) throw new \Exception("Limite export gartuit atteinte (".Hash::get($results,'totals.0.entriesCount').")");
 
     // Turn results into resources
-    $resources = $this->_transformResults($query->endpoint(), $results);
+    $resources = $this->_transformResults($query->getEndpoint(), $results);
 
     return new ResultSet($resources, count($resources));
   }
 
-  protected function _transformResults(Endpoint $endpoint, array $results)
+  protected function _transformResults(Endpoint $endpoint, array $results): array 
   {
     $resources = [];
     if(!empty($results[$endpoint->getName()])) $results = $results[$endpoint->getName()];
@@ -144,15 +144,15 @@ class ClockifyWebservice extends Webservice
       switch ($query->action())
       {
         case Query::ACTION_CREATE:
-        $response = $this->driver()->client()->post($url, json_encode($query->set()));
+        $response = $this->getDriver()->getClient()->post($url, json_encode($query->set()));
         break;
 
         case Query::ACTION_UPDATE:
-        $response = $this->driver()->client()->put($url, json_encode($query->set()));
+        $response = $this->getDriver()->getClient()->put($url, json_encode($query->set()));
         break;
 
         case Query::ACTION_DELETE:
-        $response = $this->driver()->client()->delete($url);
+        $response = $this->getDriver()->getClient()->delete($url);
         break;
       }
 
@@ -164,6 +164,6 @@ class ClockifyWebservice extends Webservice
         throw new \Exception($response->getJson()['err']);
       }
 
-      return $this->_transformResource($query->endpoint(), $response->getJson());
+      return $this->_transformResource($query->getEndpoint(), $response->getJson());
     }
   }

@@ -7,7 +7,7 @@ class UsersWebservice extends ClockifyWebservice
 
   protected $_queryFilters = ['projectId','memberships'];
 
-  public function initialize()
+  public function initialize(): void
   {
     parent::initialize();
 

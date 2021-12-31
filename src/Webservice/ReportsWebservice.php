@@ -7,17 +7,17 @@ use Cake\Utility\Hash;
 use Cake\Utility\Text;
 
 use Muffin\Webservice\Model\Endpoint;
-use Muffin\Webservice\Query;
-use Muffin\Webservice\ResultSet;
+use Muffin\Webservice\Datasource\Query;
+use Muffin\Webservice\Datasource\ResultSet;
 
 class ReportsWebservice extends ClockifyWebservice
 {
   public function getBaseUrl()
   {
-    return '/v1/' . $this->endpoint();
+    return '/v1/' . $this->getEndpoint();
   }
 
-  public function initialize()
+  public function initialize(): void
   {
     parent::initialize();
 
