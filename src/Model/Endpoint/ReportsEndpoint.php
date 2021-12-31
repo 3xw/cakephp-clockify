@@ -3,16 +3,16 @@ namespace Trois\Clockify\Model\Endpoint;
 
 class ReportsEndpoint extends ClockifyEndpoint
 {
-  public static function defaultConnectionName()
+  public static function defaultConnectionName(): string
   {
     return 'reports_clockify';
   }
 
-  public function initialize(array $config)
+  public function initialize(array $config): void
   {
     parent::initialize($config);
-    $this->primaryKey('id');
-    $this->displayField('name');
+    $this->setPrimaryKey('id');
+    $this->setDisplayField('name');
     //$this->setWebservice('Space', new \App\Webservice\ClickUp\SpaceWebservice);
     //debug($this->getWebservice());
   }

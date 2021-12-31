@@ -6,7 +6,7 @@ use Muffin\Webservice\Model\Endpoint;
 
 class ClockifyEndpoint extends Endpoint
 {
-  public static function defaultConnectionName()
+  public static function defaultConnectionName(): string
   {
     return 'clockify';
   }
@@ -23,7 +23,7 @@ class ClockifyEndpoint extends Endpoint
     // set data
     //$data = $resource->toArray(); // differs from original
     $data = $resource->extract($this->getSchema()->columns(), false);
-    
+
     if($resource->isNew()) $query = $this->query()->create();
     else $query = $query = $this->query()->update();
     $query->set($data);

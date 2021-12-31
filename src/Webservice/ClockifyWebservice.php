@@ -30,7 +30,7 @@ class ClockifyWebservice extends Webservice
     return '/api/v1/' . $this->getEndpoint();
   }
 
-  public function nestedResource(array $conditions)
+  public function nestedResource(array $conditions): ?string 
   {
     if(empty($conditions)) return false;
     if(empty($this->_nestedResources)) return false;
@@ -109,7 +109,7 @@ class ClockifyWebservice extends Webservice
     return new ResultSet($resources, count($resources));
   }
 
-  protected function _transformResults(Endpoint $endpoint, array $results): array 
+  protected function _transformResults(Endpoint $endpoint, array $results): array
   {
     $resources = [];
     if(!empty($results[$endpoint->getName()])) $results = $results[$endpoint->getName()];
