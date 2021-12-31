@@ -9,7 +9,7 @@ class ProjectSchema extends Schema
   /**
   * {@inheritDoc}
   */
-  public function initialize()
+  public function initialize(): void
   {
     parent::initialize();
 

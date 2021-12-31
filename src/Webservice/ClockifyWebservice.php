@@ -30,7 +30,7 @@ class ClockifyWebservice extends Webservice
     return '/api/v1/' . $this->getEndpoint();
   }
 
-  public function nestedResource(array $conditions): ?string 
+  public function nestedResource(array $conditions): ?string
   {
     if(empty($conditions)) return false;
     if(empty($this->_nestedResources)) return false;
@@ -141,7 +141,7 @@ class ClockifyWebservice extends Webservice
       $nestedResource = $this->nestedResource($query->getOptions()['nested'])
       ) $url = $nestedResource;
 
-      switch ($query->action())
+      switch ($query->clause('action'))
       {
         case Query::ACTION_CREATE:
         $response = $this->getDriver()->getClient()->post($url, json_encode($query->set()));
