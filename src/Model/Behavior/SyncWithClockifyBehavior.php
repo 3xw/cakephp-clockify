@@ -150,7 +150,7 @@ class SyncWithClockifyBehavior extends Behavior
       )
       {
         $joinEntity = $this->getJoinTable()->newEntity([
-           'model' => $this->getTable()->alias(),
+           'model' => $this->getTable()->getAlias(),
            'foreign_id' => $entity->id,
            'clockify_id' => $itm->id
          ]);
