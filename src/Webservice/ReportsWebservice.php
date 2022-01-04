@@ -26,7 +26,7 @@ class ReportsWebservice extends ClockifyWebservice
     ]);
   }
 
-  protected function _transformResults(Endpoint $endpoint, array $results)
+  protected function _transformResults(Endpoint $endpoint, array $results): array
   {
     $resources = [];
     foreach ($results['timeentries'] as $key => $result)
