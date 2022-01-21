@@ -13,7 +13,16 @@ class ReportsEndpoint extends ClockifyEndpoint
     parent::initialize($config);
     $this->setPrimaryKey('id');
     $this->setDisplayField('name');
-    //$this->setWebservice('Space', new \App\Webservice\ClickUp\SpaceWebservice);
-    //debug($this->getWebservice());
+  }
+
+  public function projectReportsToUserReports(array $pr = [])
+  {
+    return $pr;
+    /*
+    foreach($pr as $p)
+    {
+      $users = $p->users
+    }
+    */
   }
 }

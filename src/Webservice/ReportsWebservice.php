@@ -10,6 +10,10 @@ use Muffin\Webservice\Model\Endpoint;
 use Muffin\Webservice\Datasource\Query;
 use Muffin\Webservice\Datasource\ResultSet;
 
+use  Trois\Clockify\Model\Resource\ProjectReport;
+use  Trois\Clockify\Model\Resource\UserReport;
+use  Trois\Clockify\Model\Resource\TimeEntry;
+
 class ReportsWebservice extends ClockifyWebservice
 {
   public function getBaseUrl()
@@ -32,7 +36,7 @@ class ReportsWebservice extends ClockifyWebservice
     foreach ($results['timeentries'] as $key => $result)
     {
       // data object
-      $r = (object) array_merge(['projectName' => 'Unknown Project','clientName' => 'Unknown Client'], $result);
+      $r = new TimeEntry($result);
 
       // path
       $pName = Text::slug($r->projectName);
@@ -42,38 +46,24 @@ class ReportsWebservice extends ClockifyWebservice
       // create project
       if(!Hash::check($resources, $pName))
       {
-        $resources[$pName] = [
+        $resources[$pName] = new ProjectReport([
           'client' => $r->clientName,
-          'name' => $r->projectName,
-          'users' => []
-        ];
+          'name' => $r->projectName
+        ]);
       }
 
       // create user entries
       if(!Hash::check($resources, "$pName.users.$uName"))
       {
-        $resources[$pName]['users'][$uName] = (object)[
+        $resources[$pName]['users'][$uName] = new UserReport([
           'user' => $r->userName,
-          'userEmail' => $r->userEmail,
-          'entries' => []
-        ];
+          'userEmail' => $r->userEmail
+        ]);
       }
 
-      $this->addTimeRecord($resources[$pName]['users'][$uName]->entries, $r);
-
-      // sort
-      ksort($resources[$pName]['users'][$uName]->entries);
+      $resources[$pName]['users'][$uName]->addTimeEntry($r);
     }
 
-    $res = [];
-    foreach ($resources as $key => $result) $res[] = $result;
-    return $res;
-  }
-
-  protected function addTimeRecord(&$array, $record)
-  {
-    $key = (new \DateTime($record->timeInterval['start']))->format('Y-m-d');
-    if(empty($array[$key])) $array[$key] = $record;
-    else $array[$key]->timeInterval['duration'] += $record->timeInterval['duration'];
+    return $resources;
   }
 }
