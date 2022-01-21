@@ -32,7 +32,7 @@ class ReportsWebservice extends ClockifyWebservice
     foreach ($results['timeentries'] as $key => $result)
     {
       // data object
-      $r = (object) $result;
+      $r = (object) array_merge(['projectName' => 'Unknown Project','clientName' => 'Unknown Client'], $result);
 
       // path
       $pName = Text::slug($r->projectName);
