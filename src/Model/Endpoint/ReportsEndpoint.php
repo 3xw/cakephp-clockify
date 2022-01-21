@@ -17,12 +17,16 @@ class ReportsEndpoint extends ClockifyEndpoint
 
   public function projectReportsToUserReports(array $pr = [])
   {
-    return $pr;
-    /*
-    foreach($pr as $p)
+    $users = [];
+    foreach($pr as $p) foreach($p->users as $ur)
     {
-      $users = $p->users
+      // if not entry
+      if(empty($ur->time_entries)) continue;
+
+      if(empty($users[$ur->user])) $users[$ur->user] = clone $ur;
+      else $users[$ur->user]->addTimeEntries($ur->time_entries);
     }
-    */
+
+    return $users;
   }
 }

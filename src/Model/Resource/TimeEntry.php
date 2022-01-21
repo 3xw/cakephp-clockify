@@ -40,6 +40,7 @@ class TimeEntry extends Resource
   public function addTime(int $timestamp)
   {
     $this->end->setTimestamp($this->end->getTimestamp() + $timestamp);
+    if($this->end > $this->max) $this->max->setTimestamp($this->end->getTimestamp());
   }
 
   public function shiftBy(int $timestamp)
@@ -53,7 +54,7 @@ class TimeEntry extends Resource
   {
     $this->addTime($timeEntry->duration);
     if($timeEntry->start < $this->start) $this->shiftBy($timeEntry->start->getTimestamp() - $this->start->getTimestamp());
-    if($timeEntry->end > $this->end) $this->set('max', clone $timeEntry->end);
+    if($timeEntry->max > $this->end) $this->max->setTimestamp($timeEntry->max->getTimestamp());
     // debug("$this->userName: add ".($timeEntry->duration/60)."min ".$this->start->format('d.m'));
   }
 }
