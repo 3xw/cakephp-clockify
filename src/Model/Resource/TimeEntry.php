@@ -11,25 +11,22 @@ class TimeEntry extends Resource
 
   public function __construct(array $properties = [], array $options = [])
   {
-    $properties = array_merge(
+    parent::__construct(array_merge(
       [
         'projectName' => 'Unknown Project',
         'clientName' => 'Unknown Client',
         'start' => new \DateTime,
         'end' => new \DateTime,
-        'max' => new \DateTime,
       ],
       $properties
-    );
+    ), $options);
 
-    parent::__construct($properties, $options);
+    // extract
+    $toExtract = ['start','end'];
+    if(!empty($this->timeInterval)) foreach($toExtract as $key) if(empty($property[$key])) $this->set($key, new \DateTime($this->timeInterval['end']));
 
-    if(!empty($this->timeInterval))
-    {
-      $this->set('start', new \DateTime($this->timeInterval['start']));
-      $this->set('end', new \DateTime($this->timeInterval['end']));
-      $this->set('max', new \DateTime($this->timeInterval['end']));
-    }
+    // max
+    if(empty($property['max'])) $this->set('max', clone $this->end);
   }
 
   protected function _getDuration()

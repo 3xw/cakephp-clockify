@@ -1,6 +1,8 @@
 <?php
 namespace Trois\Clockify\Model\Endpoint;
 
+use Trois\Clockify\Model\Resource\UserReport;
+
 class ReportsEndpoint extends ClockifyEndpoint
 {
   public static function defaultConnectionName(): string
@@ -20,10 +22,12 @@ class ReportsEndpoint extends ClockifyEndpoint
     $users = [];
     foreach($pr as $p) foreach($p->users as $ur)
     {
+      $ur = new UserReport($ur->toArray());
+      
       // if not entry
       if(empty($ur->time_entries)) continue;
 
-      if(empty($users[$ur->user])) $users[$ur->user] = clone $ur;
+      if(empty($users[$ur->user])) $users[$ur->user] = $ur;
       else $users[$ur->user]->addTimeEntries($ur->time_entries);
     }
 

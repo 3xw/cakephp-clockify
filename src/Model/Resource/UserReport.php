@@ -19,6 +19,10 @@ class UserReport extends Resource
       $properties
     );
 
+    // time entries
+    if(!empty($properties['time_entries'])) foreach($properties['time_entries'] as &$timeEntry) if(is_array($timeEntry)) $timeEntry = new TimeEntry($timeEntry);
+
+    // construct
     parent::__construct($properties, $options);
   }
 
@@ -27,8 +31,12 @@ class UserReport extends Resource
     foreach($timeEntries as $timeEntry) $this->addTimeEntry($timeEntry);
   }
 
-  public function addTimeEntry(TimeEntry $timeEntry)
+  // public function addTimeEntry(TimeEntry|array $timeEntry) php 8 :/
+  public function addTimeEntry($timeEntry)
   {
+    // be tolerant
+    if(is_array($timeEntry)) $timeEntry = new TimeEntry($timeEntry);
+
     $this->cumulativeDuration += $timeEntry->durtion;
     $this->_fields['time_entries'][] = $timeEntry;
   }
@@ -39,7 +47,7 @@ class UserReport extends Resource
     foreach($this->time_entries as $e)
     {
       // clown
-      $e = clone $e;
+      $e = new TimeEntry($e->toArray());
 
       // round by entries
       if(!$roundByDay) $e->addTime($this->roudItUp($e->duration, $roundToMinute) - $e->duration);
