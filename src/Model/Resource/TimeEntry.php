@@ -23,7 +23,7 @@ class TimeEntry extends Resource
 
     // extract
     $toExtract = ['start','end'];
-    if(!empty($this->timeInterval)) foreach($toExtract as $key) if(empty($property[$key])) $this->set($key, new \DateTime($this->timeInterval['end']));
+    if(!empty($this->timeInterval)) foreach($toExtract as $key) if(empty($property[$key])) $this->set($key, new \DateTime($this->timeInterval[$key]));
 
     // max
     if(empty($property['max'])) $this->set('max', clone $this->end);
