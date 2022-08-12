@@ -5,7 +5,7 @@ namespace Trois\Clockify\Webservice;
 class UsersWebservice extends ClockifyWebservice
 {
 
-  protected $_queryFilters = ['projectId','memberships'];
+  protected $_queryFilters = ['memberships','email','projectId','name','status','sort-column','sort-order','includeRoles'];
 
   public function initialize(): void
   {
