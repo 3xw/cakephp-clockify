@@ -20,4 +20,16 @@ class ProjectReport extends Resource
 
     parent::__construct($properties, $options);
   }
+
+  public function getUserReports()
+  {
+    return $this->users ?? [];
+  }
+
+  public function getTimeEntries($MergedByDays = false, $roundToMinute = 0, $roundByDay = true)
+  {
+    $timeEntries = [];
+    foreach($this->getUserReports() as $ur) foreach ($ur->getTimeEntries($MergedByDays, $roundToMinute, $roundByDay) as $te) $timeEntries[] = $te;
+    return $timeEntries;
+  }
 }

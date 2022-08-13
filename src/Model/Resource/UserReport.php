@@ -74,4 +74,10 @@ class UserReport extends Resource
 
     return (int) $sec;
   }
+
+  public function getTimeEntries($MergedByDays = false, $roundToMinute = 0, $roundByDay = true)
+  {
+    if(!$MergedByDays) return $this->time_entries ?? [];
+    else return $this->getTimeEntriesMergedByDays($roundToMinute, $roundByDay);
+  }
 }
