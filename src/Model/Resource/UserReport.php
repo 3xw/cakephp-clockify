@@ -41,7 +41,7 @@ class UserReport extends Resource
     $this->_fields['time_entries'][] = $timeEntry;
   }
 
-  public function getTimeEntriesMergedByDays($roundToMinute = 0, $roundByDay = true): array
+  public function getTimeEntriesMergedByDays($roundToMinute = 0, $roundByDay = true, $splitByTask = false): array
   {
     $entries = [];
     foreach($this->time_entries as $e)
@@ -52,7 +52,7 @@ class UserReport extends Resource
       // round by entries
       if(!$roundByDay) $e->addTime($this->roudItUp($e->duration, $roundToMinute) - $e->duration);
 
-      $key = $e->start->format('Y-m-d');
+      $key = $splitByTask? $e->start->format('Y-m-d')."__$e->taskName" :$e->start->format('Y-m-d');
       if(empty($entries[$key])) $entries[$key] = $e;
       else $entries[$key]->sumWithTimeEntry($e);
     }
@@ -75,9 +75,9 @@ class UserReport extends Resource
     return (int) $sec;
   }
 
-  public function getTimeEntries($MergedByDays = false, $roundToMinute = 0, $roundByDay = true)
+  public function getTimeEntries($MergedByDays = false, $roundToMinute = 0, $roundByDay = true, $splitByTask = false)
   {
     if(!$MergedByDays) return $this->time_entries ?? [];
-    else return $this->getTimeEntriesMergedByDays($roundToMinute, $roundByDay);
+    else return $this->getTimeEntriesMergedByDays($roundToMinute, $roundByDay, $splitByTask);
   }
 }
